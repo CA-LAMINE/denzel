@@ -7,7 +7,7 @@ const imdb = require('../src/imdb');
 const DENZEL_IMDB_ID = 'nm0000243';
 const MIKKELSEN_IMDB_ID = 'nm0586568';
 
-const CONNECTION_URL = "mongodb+srv://calamine:bewasbeen@cal-cluster-zt7wh.gcp.mongodb.net/test?retryWrites=true";
+const CONNECTION_URL = "";
 const DATABASE_NAME = "Web_Application";
 
 var app = Express();
