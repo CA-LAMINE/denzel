@@ -9,7 +9,8 @@
     "mongodb": "^3.1.13",
     "node-fetch": "^2.3.0",
     "p-limit": "^2.2.0",
-    "p-settle": "^2.1.0"
+    "p-settle": "^2.1.0",
+    "require": "^2.4.20"
   },
   "main": "sandbox.js",
   "scripts": {

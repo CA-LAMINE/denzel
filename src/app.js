@@ -3,11 +3,11 @@ const BodyParser = require("body-parser");
 const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectID;
 
-const imdb = require("./src/imdb");
-const DENZEL_IMDB_ID = "nm0000243";
-//const MIKKELSEN_IMDB_ID = 'nm0586568';
+const imdb = require('../src/imdb');
+const DENZEL_IMDB_ID = 'nm0000243';
+const MIKKELSEN_IMDB_ID = 'nm0586568';
 
-const CONNECTION_URL = "";
+const CONNECTION_URL = "mongodb+srv://calamine:bewasbeen@cal-cluster-zt7wh.gcp.mongodb.net/test?retryWrites=true";
 const DATABASE_NAME = "Web_Application";
 
 var app = Express();
@@ -28,40 +28,53 @@ app.listen(9292, () => {
     });
 });
 
-app.post("/movies", (request, response) => {
-    collection.insert(request.body, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result.result);
+app.get('/movies/populate', (req, res) => {
+    if (!collection) {
+        return res.status(500).send('Database offline!');
+    }
+    imdb(DENZEL_IMDB_ID).then((val) => {
+        var movies = val;
+        collection.insertMany(movies, (error, result) => {
+            if (error) {
+                return res.status(500).send(error);
+            }
+            console.log(result.result.n + " movies added to database");
+
+            res.send(result.result);
+        });
     });
 });
 
-app.post("/movies/populate", async (request,response) => {
-    const movies = await imdb(DENZEL_IMDB_ID);
-    const str_movies = JSON.stringify(movies);
-    collection.insertMany(movies,(error,result) =>{
-        if(error) {
-            return response.status(500).send(error);
+app.get('/movies', (req, res) => {
+    if (!collection) {
+        return res.status(500).send('Database offline!');
+    }
+    collection.find({ metascore: { $gt: 70 } }).toArray((error, result) => {
+        if (error) {
+            return res.status(500).send(error);
         }
-        response.send(result.result);
+        var index = Math.floor(Math.random() * result.length);
+        var movie = result[index].title;
+        res.send(movie);
+        console.log(result[index]);
     });
 });
 
-app.get("/movies", (request, response) => {
-    collection.find({}).toArray((error, result) => {
-        if(error) {
-            return response.status(500).send(error);
+app.get('/movies/:id', (req, res) => {
+    if (!collection) {
+        return res.status(500).send('Database offline!');
+    }
+    var id = req.params.id;
+    collection.find({ id: id }).toArray((error, result) => {
+        if (error) {
+            return res.status(500).send(error);
         }
-        response.send(result);
-    });
-});
+        if (result.length > 0) {
+            res.send(result[0]);
+        }
+        else {
+            res.status(500).send({error : `No result for this id : ${id}`});
+        }
 
-app.get("/movies/populate/:id", (request, response) => {
-    collection.findOne({ "_id": new ObjectId(request.params.id) }, (error, result) => {
-        if(error) {
-            return response.status(500).send(error);
-        }
-        response.send(result);
     });
 });
