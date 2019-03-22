@@ -1,8 +1,8 @@
-const cheerio = require('cheerio');
-const fetch = require('node-fetch');
-const pLimit = require('p-limit');
-const pSettle = require('p-settle');
-const {IMDB_NAME_URL, IMDB_URL, P_LIMIT} = require('./constants');
+const cheerio = require("cheerio");
+const fetch = require("node-fetch");
+const pLimit = require("p-limit");
+const pSettle = require("p-settle");
+const {IMDB_NAME_URL, IMDB_URL, P_LIMIT} = require("./constants");
 
 /**
  * Get filmography for a given actor
@@ -14,11 +14,11 @@ const getFilmography = async actor => {
     const body = await response.text();
     const $ = cheerio.load(body);
 
-    return $('#filmo-head-actor + .filmo-category-section .filmo-row b a')
+    return $("#filmo-head-actor + .filmo-category-section .filmo-row b a")
         .map((i, element) => {
             return {
-                'link': `${IMDB_URL}${$(element).attr('href')}`,
-                'title': $(element).text()
+                "link": `${IMDB_URL}${$(element).attr("href")}`,
+                "title": $(element).text()
             };
         })
         .get();

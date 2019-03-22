@@ -26,5 +26,6 @@
   "bugs": {
     "url": "https://github.com/CA-LAMINE/denzel/issues"
   },
-  "homepage": "https://github.com/CA-LAMINE/denzel#readme"
+  "homepage": "https://github.com/CA-LAMINE/denzel#readme",
+  "devDependencies": {}
 }
